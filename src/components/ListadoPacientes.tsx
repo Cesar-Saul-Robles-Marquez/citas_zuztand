@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { usePacienteStore } from '../store/store'
 import DialogModal from './DialogModal'
 import { toast, ToastContainer } from 'react-toastify'
@@ -47,7 +47,6 @@ const ListadoPacientes = () => {
                         pauseOnHover: true,
                         draggable: true,
                         theme: "light",
-                        progressStyle: { background: '#4f46e5' }
                     }
                 )
             }

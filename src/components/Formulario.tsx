@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { usePacienteStore } from '../store/store'
 import type { DraftPatient } from '../types'
@@ -8,21 +8,41 @@ const Formulario = () => {
   const agregarPaciente = usePacienteStore((state) => state.agregarPaciente)
 
 
-const pacienteActivo = usePacienteStore((state) => state.pacienteActivo)
-  const actualizarPaciente = usePacienteStore((state) => state.actualizarPaciente)
-  const limpiarPacienteActivo = usePacienteStore((state) => state.limpiarPacienteActivo)
+    const pacienteActivo = usePacienteStore((state) => state.pacienteActivo)
+    const actualizarPaciente = usePacienteStore((state) => state.actualizarPaciente)
+    const limpiarPacienteActivo = usePacienteStore((state) => state.limpiarPacienteActivo)
   
   const { 
     register, 
     handleSubmit, 
     formState: { errors },
-    setValue,
     reset 
   } = useForm<DraftPatient>()
 
   const registrarPaciente = (data: DraftPatient) => {
-    agregarPaciente(data)
+    if (pacienteActivo) {
+      actualizarPaciente(data)
+    } else {
+      agregarPaciente(data)
+    }
+    limpiarPacienteActivo()
+    reset()
   }
+
+  useEffect(() => {
+    if (pacienteActivo) {
+      reset({
+        name: pacienteActivo.name,
+        caretaker: pacienteActivo.caretaker,
+        email: pacienteActivo.email,
+        date: pacienteActivo.date,
+        symptoms: pacienteActivo.symptoms,
+      })
+      return
+    }
+
+    reset()
+  }, [pacienteActivo, reset])
 
   return (
     <div className="md:w-1/2 lg:w-2/5 mx-5">
@@ -115,7 +135,7 @@ const pacienteActivo = usePacienteStore((state) => state.pacienteActivo)
             <input
                 type="submit"
                 className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-                value='Guardar Paciente'
+                value={'Guardar Paciente'}
             />
         </form> 
     </div>
